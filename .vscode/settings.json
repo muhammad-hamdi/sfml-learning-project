@@ -3,6 +3,7 @@
     "files.associations": {
         "*.tcc": "cpp",
         "fstream": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "new": "cpp"
     }
 }

@@ -1,14 +1,17 @@
 #include "Player.h"
 #include<math.h>
 
-Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed): animation(texture, imageCount, switchTime), speed(speed)
+Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed): animation(texture, imageCount, switchTime), speed(speed), collider(shape), sprite(*texture)
 {
     row = 0;
     facingRight = true;
 
-    shape.setSize(sf::Vector2f(100.f, 100.f));
+    shape.setSize(sf::Vector2f(45.f, 75.f));
+    shape.setOrigin(shape.getSize()/2.f);
+    sprite.setScale(2.f, 2.f);
+    sprite.setOrigin(shape.getOrigin());
     shape.setPosition(150.f, 150.f);
-    shape.setTexture(texture);
+    // shape.setTexture(texture);
 }
 
 Player::~Player()
@@ -37,10 +40,13 @@ void Player::Update(float deltaTime)
     }
     animation.Update(row, deltaTime, facingRight, row ? 0 : 6);
     shape.setTextureRect(animation.uvRect);
+    sprite.setTextureRect(animation.uvRect);
     shape.move(vel * speed * deltaTime);
+    sprite.setPosition(shape.getPosition());
 }
 
 void Player::Draw(sf::RenderWindow &window)
 {
     window.draw(shape);
+    window.draw(sprite);
 }
