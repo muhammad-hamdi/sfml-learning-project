@@ -6,11 +6,12 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
     row = 0;
     facingRight = true;
 
-    shape.setSize(sf::Vector2f(45.f, 75.f));
+    shape.setSize(sf::Vector2f(40.f, 65.f));
     shape.setOrigin(shape.getSize()/2.f);
     sprite.setScale(2.f, 2.f);
     sprite.setOrigin(shape.getOrigin());
     shape.setPosition(150.f, 150.f);
+    centerPoint.color = sf::Color::Black;
     // shape.setTexture(texture);
 }
 
@@ -42,11 +43,13 @@ void Player::Update(float deltaTime)
     shape.setTextureRect(animation.uvRect);
     sprite.setTextureRect(animation.uvRect);
     shape.move(vel * speed * deltaTime);
-    sprite.setPosition(shape.getPosition());
+    sprite.setPosition(shape.getPosition().x - 12.f, shape.getPosition().y - 15.f);
+    centerPoint.position = sf::Vector2f(sprite.getGlobalBounds().left + sprite.getGlobalBounds().width, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height);
 }
 
 void Player::Draw(sf::RenderWindow &window)
 {
     window.draw(shape);
     window.draw(sprite);
+    window.draw(&centerPoint, 1, sf::Points);
 }

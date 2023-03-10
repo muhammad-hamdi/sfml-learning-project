@@ -67,7 +67,9 @@ int main()
         handleEvents(window, view);
         player.Update(deltaTime);
         platform1.getCollider().checkCollision(player.getCollider(), 0.f);
+        platform1.getCollider().checkCollision(platform2.getCollider(), 0.f);
         platform2.getCollider().checkCollision(player.getCollider(), 1.f);
+        platform2.getCollider().checkCollision(platform1.getCollider(), 0.f);
 
         view.setCenter(lerp(view.getCenter(), player.getPosition(), deltaTime * 4));
         

@@ -22,6 +22,7 @@ private:
     sf::Sprite sprite;
     Animation animation;
     Collider collider;
+    sf::Vertex centerPoint;
     unsigned int row;
     float speed;
     bool facingRight;
