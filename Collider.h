@@ -12,7 +12,7 @@ public:
 
     void move(float dx, float dy) { shape.move(dx, dy); }
 
-    bool checkCollision(Collider & other, float push) {
+    bool checkCollision(Collider & other, sf::Vector2f & direction, float push) {
         sf::Vector2f otherPosition = other.getPosition();
         sf::Vector2f otherHalfsize = other.getHalfSize();
         sf::Vector2f thisPosition = getPosition();
@@ -29,11 +29,17 @@ public:
                 if (deltaX > 0.0f) {
                     move(intersectX * (1.f - push), 0.f);
                     other.move(-intersectX * push, 0.f);
+
+                    direction.x = 1.0f;
+                    direction.y = 0.0f;
                 }
                 else
                 {
                     move(-intersectX * (1.f - push), 0.f);
                     other.move(intersectX * push, 0.f);
+
+                    direction.x = -1.0f;
+                    direction.y = 0.0f;
                 }
             }
             else
@@ -41,11 +47,17 @@ public:
                 if (deltaY > 0.0f) {
                     move(0.f, intersectY * (1.f - push));
                     other.move(0.f, -intersectY * push);
+
+                    direction.x = 0.0f;
+                    direction.y = 1.0f;
                 }
                 else
                 {
                     move(0.f, -intersectY * (1.f - push));
                     other.move(0.f, intersectY * push);
+
+                    direction.x = 0.0f;
+                    direction.y = -1.0f;
                 }
             }
 

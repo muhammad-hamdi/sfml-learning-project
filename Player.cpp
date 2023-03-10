@@ -1,5 +1,5 @@
-#include "Player.h"
 #include<math.h>
+#include "Player.h"
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed): animation(texture, imageCount, switchTime), speed(speed), collider(shape), sprite(*texture)
 {
@@ -12,7 +12,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
     sprite.setOrigin(shape.getOrigin());
     shape.setPosition(position);
     sprite.setPosition(position);
-    centerPoint.color = sf::Color::Black;
+    centerPoint.color = sf::Color::Yellow;
     // shape.setTexture(texture);
 }
 
@@ -22,7 +22,8 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
-    sf::Vector2f vel;
+    vel.x = 0;
+    vel.y = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) vel.y -= 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) vel.x -= 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) vel.y += 1;
@@ -47,16 +48,17 @@ void Player::Update(float deltaTime)
     animation.Update(row, deltaTime, facingRight, row ? 0 : 6);
     shape.setTextureRect(animation.uvRect);
     sprite.setTextureRect(animation.uvRect);
+    // printf("Velocity (%f, %f)\n", vel.x, vel.y);
+    // position += vel * speed * deltaTime;
+    shape.move(vel * speed * deltaTime);
+    // shape.setPosition(position);
+    // sprite.setPosition(position);
 
-    position += vel * speed * deltaTime;
-    // shape.move(vel * speed * deltaTime);
-    shape.setPosition(position);
-    sprite.setPosition(position);
-
-    // sprite.setPosition(shape.getPosition().x - 12.f, shape.getPosition().y - 15.f);
+    sprite.setPosition(shape.getPosition().x - 12.f, shape.getPosition().y - 15.f);
 
     // centerPoint.position = sf::Vector2f(sprite.getGlobalBounds().left + sprite.getGlobalBounds().width, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height);
-    centerPoint.position = position;
+    // centerPoint.position = position;
+    centerPoint.position = shape.getPosition();
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -64,4 +66,18 @@ void Player::Draw(sf::RenderWindow &window)
     window.draw(shape);
     window.draw(sprite);
     window.draw(&centerPoint, 1, sf::Points);
+}
+
+void Player::onCollision(sf::Vector2f direction)
+{
+    // printf("Direction: (%f, %f)\n", direction.x, direction.y);
+    if(abs(direction.x) > 0)
+    {
+        vel.x = 0.f;
+    }
+
+    if(abs(direction.y) > 0)
+    {
+        vel.y = 0.f;
+    }
 }

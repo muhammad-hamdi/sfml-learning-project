@@ -5,6 +5,9 @@
 
 static const float VIEW_HEIGHT  = 600;
 
+sf::Vector2f lerp(sf::Vector2f v0, sf::Vector2f v1, float t) {
+    return (1 - t) * v0 + t * v1;
+}
 
 void resizeView(const sf::RenderWindow& window, sf::View& view) {
     float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
@@ -27,10 +30,6 @@ void handleEvents(sf::RenderWindow& window, sf::View& view) {
     }
 }
 
-sf::Vector2f lerp(sf::Vector2f v0, sf::Vector2f v1, float t) {
-    return (1 - t) * v0 + t * v1;
-}
-
 int main()
 {
     // Create Window
@@ -42,8 +41,10 @@ int main()
     playerTexture.loadFromFile("../resources/char_red.png");
     Player player(&playerTexture, sf::Vector2u(8, 11), 0.1, 200);
 
-    Platform platform1(nullptr, sf::Vector2f(100.f, 100.f), sf::Vector2f(50.f, 50.f));
-    Platform platform2(nullptr, sf::Vector2f(200.f, 300.f), sf::Vector2f(200.f, 300.f));
+    std::vector<Platform> platforms;
+
+    platforms.push_back(Platform(nullptr, sf::Vector2f(100.f, 100.f), sf::Vector2f(50.f, 50.f)));
+    platforms.push_back(Platform(nullptr, sf::Vector2f(200.f, 300.f), sf::Vector2f(200.f, 300.f)));
     
     // sf::Font font;
     // if (!font.loadFromFile("../resources/sansation.ttf"))
@@ -66,10 +67,15 @@ int main()
         // events
         handleEvents(window, view);
         player.Update(deltaTime);
-        platform1.getCollider().checkCollision(player.getCollider(), 0.f);
-        platform1.getCollider().checkCollision(platform2.getCollider(), 0.f);
-        platform2.getCollider().checkCollision(player.getCollider(), 1.f);
-        platform2.getCollider().checkCollision(platform1.getCollider(), 0.f);
+
+        sf::Vector2f direction;
+
+        for(Platform& plat : platforms) {
+            if(plat.getCollider().checkCollision(player.getCollider(), direction, 1.f))
+            {
+                player.onCollision(direction);
+            }
+        }
 
         view.setCenter(lerp(view.getCenter(), player.getPosition(), deltaTime * 4));
         
@@ -80,8 +86,9 @@ int main()
         
         // Do the drawing here
         player.Draw(window);
-        platform1.Draw(window);
-        platform2.Draw(window);
+        for(Platform& plat : platforms) {
+            plat.Draw(window);
+        }
 
         // Display the frame
         window.display();

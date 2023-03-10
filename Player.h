@@ -17,12 +17,15 @@ public:
         return this->collider;
     }
 
+    void onCollision(sf::Vector2f direction);
+
 private:
     sf::RectangleShape shape;
     sf::Sprite sprite;
     Animation animation;
     Collider collider;
     sf::Vector2f position;
+    sf::Vector2f vel;
     sf::Vertex centerPoint;
     unsigned int row;
     float speed;
